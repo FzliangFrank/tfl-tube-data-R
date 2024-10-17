@@ -152,10 +152,17 @@ def vis(json_data, centre_strength = 60):
             .attr("y1", d => d.source.y)
             .attr("x2", d => d.target.x)
             .attr("y2", d => d.target.y);
-
-        node.attr("transform", d => `translate(${{d.x}},${{d.y}})`);
-        text1.attr("transform", d => `translate(${{d.x}},${{d.y}})`);
-        text2.attr("transform", d => `translate(${{d.x}},${{d.y}})`);
+        // this the code bug
+        // 
+        node
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+        text1
+            .attr("x", d => d.x)
+            .attr("y", d => d.y)
+        text2
+            .attr("x", d => d.x)
+            .attr("y", d => d.y)
     }});
 
     
