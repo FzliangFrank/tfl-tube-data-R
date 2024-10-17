@@ -116,7 +116,6 @@ def vis(json_data, centre_strength = 60):
         .attr("fill", node_color_fill)
         .attr("stroke-linecap", "round")
         .attr("stroke-linejoin", "round")
-        .call(drag(simulation));
 
     // Add Label To Node: This technique is adding element instead of text on top of label
     const text1 = svg.append("g")
@@ -139,33 +138,6 @@ def vis(json_data, centre_strength = 60):
 
     //document.getElementById("dev").innerHTML = labels
     //document.getElementById("dev").innerHTML += typeof graphData.nodes.map(d => d.name)
-
-
-    // Dragging functionality for nodes
-    function drag(simulation) {{
-        function dragstarted(event, d) {{
-            if (!event.active) simulation.alphaTarget(0.3).restart();
-            d.fx = d.x;
-            d.fy = d.y;
-        }}
-        
-        function dragged(event, d) {{
-            d.fx = event.x;
-            d.fy = event.y;
-        }}
-        
-        function dragended(event, d) {{
-            if (!event.active) simulation.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
-        }}
-        
-        return d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended);
-    }}
-
 
     // This is Very Important; If you don't add this function there will be no coordinate
     // Update positions of nodes and links on each tick
