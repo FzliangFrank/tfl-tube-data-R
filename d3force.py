@@ -33,6 +33,11 @@ __zoom_js_v1 = '''
         .call(zoom)
         .call(zoom.translateTo, 0, 0); // translateTo define scale element
 '''
+
+
+'''
+In this verion link will link together but nothing will.
+'''
 __zoom_js_v2 = '''
     // Create object handle zoom event
     // (zoom: before creating node) Append a new element type "rect" as a child elemetn
