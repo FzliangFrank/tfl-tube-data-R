@@ -3,19 +3,66 @@
 from IPython.display import display, HTML
 import json
 
+'''
+This first version creates some issue 
+when dragged the node and text don't move but eventually not moving at all
+'''
+__zoom_js_v1 = '''
+    // Create object handle zoom event
+
+    // Create a new zoom behavior
+    const zoom = d3.zoom()
+        .scaleExtent([1/2, 64])
+        .on("zoom", zoomed);
+    // Append a new element type "rect" as a child elemetn
+    const zoomRect = svg.append("rect")
+        .attr("width", width)
+        .attr("height", height)
+        .style("fill", "none")
+        .style("pointer-events", "all")
+    // Now you Apply zoom behavour defined in the first step to the rectabgle
+    let transform = d3.zoomIdentity;
+    function zoomed(event) {{
+        transform = event.transform;
+        node.attr("transform", event.transform);
+        link.attr("transform", event.transform);
+        text1.attr("transform", event.transform);
+        text2.attr("transform", event.transform);
+    }}
+    zoomRect
+        .call(zoom)
+        .call(zoom.translateTo, 0, 0); // translateTo define scale element
+'''
+__zoom_js_v2 = '''
+    // Create object handle zoom event
+    // (zoom: before creating node) Append a new element type "rect" as a child elemetn
+    const zoomRect = svg.append("rect")
+        .attr("width", width)
+        .attr("height", height)
+        .style("fill", "none")
+        .style("pointer-events", "all")
+    // Zoom Behavour
+    // Create a new zoom behavior
+    const zoom = d3.zoom()
+        .scaleExtent([1/2, 64])
+        .on("zoom", zoomed);
+    // Now you Apply zoom behavour defined in the first step to the rectabgle
+    let transform = d3.zoomIdentity;
+    function zoomed(event, d) {{
+        transform = event.transform;
+        node.attr("transform", event.transform);
+        link.attr("transform", event.transform);
+        text1.attr("transform", event.transform);
+        text2.attr("transform", event.transform);
+        //simulation.attr("transform", event.transform);
+    }}
+    zoomRect
+        .call(zoom)
+        //.call(zoom.translateTo, 1, 1); // bug: this element somehow cause edge node mismatch
+
+'''
 
 def vis(json_data, centre_strength = 60):
-    # Data for nodes and links (Python dictionary)
-    # json_data = {
-    #     'nodes': [{'id': 0, 'name': 'A'}
-    #             , {'id': 1, 'name': 'B'}
-    #             , {'id': 2, 'name': 'C'}
-    #             ,{'id': 3, 'name': 'D'} ],
-    #     'links': [{'source': 0, 'target': 1}
-    #             , {'source': 1, 'target': 2}
-    #             , {'source': 1, 'target': 3}
-    #             , {'source':2, 'target': 3}]
-    # }
 
     html_code_2 = f"""
     <p id="dev"></p>
@@ -30,19 +77,25 @@ def vis(json_data, centre_strength = 60):
     // Set the dimensions of the graph
     const width = 1200;
     const height = 800;
-
+    const node_repel = -50
+    const node_color_fill = "#f4d03f"
+    const link_color = "#839192"
+    
+    
     // Append an SVG element to the div with id 'd3-graph'
     const svg = d3.select("#d3-graph")
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .style('max-width', '80%')
-        .style('height', 'auto');
+        .style('max-width', '100%')
+        .style('height', 'auto')
+
+    
 
     // Define the force simulation
     const simulation = d3.forceSimulation(graphData.nodes)
         .force("link", d3.forceLink(graphData.links).id(d => d.id).distance(100))
-        .force("charge", d3.forceManyBody().strength(-40))
+        .force("charge", d3.forceManyBody().strength(node_repel))
         .force("center", d3.forceCenter(width / 2, height / 2));
 
     // Create the link (line) elements
@@ -50,7 +103,7 @@ def vis(json_data, centre_strength = 60):
         .selectAll("line")
         .data(graphData.links)
         .enter().append("line")
-        .attr("stroke", "#999")
+        .attr("stroke", link_color)
         .attr("stroke-width", 2);
 
 
@@ -60,7 +113,7 @@ def vis(json_data, centre_strength = 60):
         .data(graphData.nodes)
         .enter().append("circle")
         .attr("r", 5)
-        .attr("fill", "#a3e4d7")
+        .attr("fill", node_color_fill)
         .attr("stroke-linecap", "round")
         .attr("stroke-linejoin", "round")
         .call(drag(simulation));
@@ -83,7 +136,6 @@ def vis(json_data, centre_strength = 60):
         .attr("stroke", "white")
         .attr("stroke-width", 3);
 
-    
 
     //document.getElementById("dev").innerHTML = labels
     //document.getElementById("dev").innerHTML += typeof graphData.nodes.map(d => d.name)
@@ -129,6 +181,8 @@ def vis(json_data, centre_strength = 60):
         text2.attr("transform", d => `translate(${{d.x}},${{d.y}})`);
     }});
 
+    
+    {__zoom_js_v2}
     </script>
     """
 
