@@ -12,7 +12,7 @@ __zoom_js_v1 = '''
 
     // Create a new zoom behavior
     const zoom = d3.zoom()
-        .scaleExtent([1/2, 64])
+        .scaleExtent([1/2, 200])
         .on("zoom", zoomed);
     // Append a new element type "rect" as a child elemetn
     const zoomRect = svg.append("rect")
@@ -67,7 +67,7 @@ __zoom_js_v2 = '''
 
 '''
 
-def vis(json_data, centre_strength = 60):
+def vis(json_data, force = -40):
 
     html_code_2 = f"""
     <p id="dev"></p>
@@ -82,7 +82,7 @@ def vis(json_data, centre_strength = 60):
     // Set the dimensions of the graph
     const width = 1200;
     const height = 800;
-    const node_repel = -50
+    const node_repel = {force}
     const node_color_fill = "#f4d03f"
     const link_color = "#839192"
     
@@ -95,7 +95,6 @@ def vis(json_data, centre_strength = 60):
         .style('max-width', '100%')
         .style('height', 'auto')
 
-    
 
     // Define the force simulation
     const simulation = d3.forceSimulation(graphData.nodes)
